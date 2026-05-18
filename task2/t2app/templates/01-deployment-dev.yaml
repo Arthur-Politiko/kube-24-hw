@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: {{ .Release.Name | default .Values.dev.name }}-dev
+  namespace: {{ .Values.namespace | default "default" }}
+spec:
+  replicas: {{ .Values.dev.replicas  | default 1  }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-dev
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-dev
+    spec:
+      containers:
+      - name: dev
+        image: "{{ .Values.dev.image.multitool.repository }}:{{ .Values.dev.image.multitool.tag }}"
+        env:                           
+          - name: HTTP_PORT
+            value: {{ .Values.dev.env.http_port | quote }}              # tune multitool to listen on 8080
+        resources:
+          {{- toYaml .Values.dev.resources | nindent 10 }}

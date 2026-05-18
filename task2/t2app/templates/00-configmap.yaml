@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-web-config
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+data:
+  index.html: {{ .Values.configMap.indexHtml | quote }}

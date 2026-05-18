@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: {{ .Release.Name | default .Values.web.name }}-web
+  namespace: {{ .Values.namespace | default "default" }}
+spec:
+  replicas: {{ .Values.web.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-web
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-web
+    spec:
+      containers:
+      - name: nginx
+        image: "{{ .Values.web.image.nginx.repository }}:{{ .Values.web.image.nginx.tag }}"
+        ports:
+        - containerPort: 80
+        resources:
+          {{- toYaml .Values.web.resources | nindent 10 }}
+      volumes:
+      - name: html
+        configMap:
+          name: {{ .Release.Name }}-web-config          

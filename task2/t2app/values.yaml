@@ -1,0 +1,65 @@
+namespace: task2
+
+replicaCount: 2
+
+# Настройки multitool
+dev:
+  name: dev
+  image:
+    multitool:
+      repository: wbitt/network-multitool
+      tag: latest
+      pullPolicy: IfNotPresent
+  service:
+    port: 8080
+  env:
+    http_port: "8080"
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+# Настройки web
+web:
+  name: web
+  image:
+    nginx:
+      repository: nginx
+      tag: latest
+      pullPolicy: IfNotPresent
+  service:
+    port: 80      
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  host: myapp.example.com
+  tls:
+    enabled: true
+    secretName: tls-secret
+
+
+configMap:
+  indexHtml: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Helm приложение</title>
+    </head>
+    <body>
+      <h1>Привет от Helm!</h1>
+    </body>
+    </html>
